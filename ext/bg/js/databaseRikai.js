@@ -2,6 +2,11 @@
  * Created by Kalamandea on 04.09.2017.
  */
 
+/**
+ * DatabaseRikaichan loads the dictionary file (https://drive.google.com/drive/folders/0BwVl0WUbZr5QQkpEdV9YS1RYNDg) to cache?
+ */
+
+
 class DatabaseRikaichan {
     constructor() {
         this.dbList = {};
@@ -10,6 +15,10 @@ class DatabaseRikaichan {
         this.importDictionary = this.importDictionary.bind(this);
     }
 
+    /**
+     * Dexie is a wrapper library for indexDB, a DB for browser
+     * @param {*} name name of the dictionary?
+     */
     sanitize(name) {
         const db = new Dexie(name);
         return db.open().then(() => {
@@ -20,6 +29,10 @@ class DatabaseRikaichan {
         }).catch(() => {});
     }
 
+    /**
+     * Prepare the dictionary
+     * @param {*} name  name of the dictionary
+     */    
     prepare(name) {
         if (name == null) {
             return Promise.reject('Unknown title');
@@ -35,6 +48,10 @@ class DatabaseRikaichan {
         });
     }
 
+    /**
+     * delete the dictionary in case it is not initialized sucessfully
+     * @param {*} name 
+     */
     purge(name) {
         if (this.dbList[name] === null) {
             return Promise.reject('database' + name + ' not initialized');
@@ -47,11 +64,18 @@ class DatabaseRikaichan {
         });
     }
 
+    /**
+     * Looking for the words in dictionary
+     * @param {*} term the words we are looking for  
+     * @param {*} dic 
+     */
+
     findWord(term, dic) {
         if (this.dbList[dic] == null) {
             return Promise.reject('database not initialized');
         }
         const results = [];
+        // dic is already in dblist, if kanji or kana equals to the word we are looking for return result
         return this.dbList[dic].terms.where('kanji').equals(term).or('kana').equals(term).each(row => {
             results.push({
                 kanji: row.kanji,
@@ -63,9 +87,15 @@ class DatabaseRikaichan {
         });
     }
 
+    /**
+     * 
+     * @param {*} archive 
+     * @param {*} callback 
+     */
     importDictionary(archive, callback) {
         let self = this;
         let summary = null;
+        // index = index.json , entries = current dict bank, total = 
         const termsLoaded = (index, entries, total, current) => {
             const rows = [];
             let ch = 0;

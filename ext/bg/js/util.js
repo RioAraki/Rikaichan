@@ -184,6 +184,7 @@ function readArray(name) {
 
 function zipLoadDb(archive, termsLoaded) {
     return JSZip.loadAsync(archive).then(files => files.files).then(files => {
+        // index.json is in each zip dictionary
         const indexFile = files['index.json'];
         if (!indexFile) {
             return Promise.reject('no dictionary index found in archive');
@@ -208,6 +209,7 @@ function zipLoadDb(archive, termsLoaded) {
                     return termsLoaded(index, lines, 1, banksLoaded++);
                 }));
             }else{
+                // iterate through each bank and load all the terms
                 for (let i = 0; i <= index.banksCount; ++i) {
                     const bankFile = files[`Dict_${i}.json`];
                     if (!bankFile) {

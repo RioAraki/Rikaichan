@@ -1,3 +1,7 @@
+/**
+ * Logic of hover mouse retrieve text send to rikaikun
+ */
+
 let enabled = false;
 let altView = 0;
 let lastFound = null;
